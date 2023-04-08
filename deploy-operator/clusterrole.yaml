@@ -9,6 +9,8 @@ rules:
   - pods
   - ingresses
   - deployments
+  - services
+  - jobs
   verbs:
   - list
   - watch

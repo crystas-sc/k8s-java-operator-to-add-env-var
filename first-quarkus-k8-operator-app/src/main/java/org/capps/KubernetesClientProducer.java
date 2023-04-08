@@ -8,8 +8,8 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.KubernetesClientBuilder;
 
 @Singleton
 public class KubernetesClientProducer {
@@ -25,6 +25,6 @@ public class KubernetesClientProducer {
     @Singleton
     KubernetesClient newClient(@Named("namespace") String namespace) {
         System.out.println("newClient namespace: "+namespace);
-        return new DefaultKubernetesClient().inNamespace(namespace);
+        return new  KubernetesClientBuilder().build();
     }
 }

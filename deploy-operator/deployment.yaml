@@ -17,3 +17,7 @@ spec:
       - image: capps/firstk8soperator:latest
         name: operator-example
         imagePullPolicy: IfNotPresent
+        ports: 
+        - name: http
+          containerPort: 8080
+          protocol: TCP

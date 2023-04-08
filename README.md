@@ -68,7 +68,17 @@ kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
 
 
 ```
+## Deployment REST API Test
+```
+curl -X POST http://localhost:8080/k8s/deploy  -H 'Content-Type: application/json'  -d '{"deploymentName":"nginx","namespace":"default","image":"nginx:stable-alpine3.17-slim","port":"80","env":{"env1":"val1","env2":"val3"}}'
 
+curl -X POST http://localhost:8080/k8s/runjob  -H 'Content-Type: application/json'  -d '{"name":"hello","namespace":"default","image":"busybox:1.28","cmdArgs":["echo","\"Hello World!! I am $(name)\""],"env":{"name":"Roger"}}'
+
+
+curl  http://localhost:8080/k8s/default/pods
+curl  http://localhost:8080/k8s/default/jobs
+curl  http://localhost:8080/k8s/default/job/hello
+```
 
 ## Reference
 https://www.baeldung.com/ops/kubernetes-kind
