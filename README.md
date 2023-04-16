@@ -66,18 +66,27 @@ kubectl apply -f deploy-operator/deployment.yaml
 kubectl delete deploy operator-example
 kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
 
+# Create secret with username as secret name and password as data for authenticating REST api
+kubectl create secret generic apiuser  --from-literal=password=k8spwd
+kubectl get secrets/apiuser --template='{{.data.password | base64decode}}'
+
+
+
 
 ```
 ## Deployment REST API Test
 ```
-curl -X POST http://localhost:8080/k8s/deploy  -H 'Content-Type: application/json'  -d '{"deploymentName":"nginx","namespace":"default","image":"nginx:stable-alpine3.17-slim","port":"80","env":{"env1":"val1","env2":"val3"}}'
+# Get base64 encoded Basic authentication string
+echo "apiuser:k8spwd" | base64
 
-curl -X POST http://localhost:8080/k8s/runjob  -H 'Content-Type: application/json'  -d '{"name":"hello","namespace":"default","image":"busybox:1.28","cmdArgs":["echo","\"Hello World!! I am $(name)\""],"env":{"name":"Roger"}}'
+curl -X POST http://localhost:8080/k8s/deploy  -H "Authorization: BASIC YXBpdXNlcjprOHNwd2QK" -H 'Content-Type: application/json'  -d '{"deploymentName":"nginx","namespace":"default","image":"nginx:stable-alpine3.17-slim","port":"80","env":{"env1":"val1","env2":"val3"}}'
+
+curl -X POST http://localhost:8080/k8s/runjob  -H "Authorization: BASIC YXBpdXNlcjprOHNwd2QK" -H 'Content-Type: application/json'  -d '{"name":"hello","namespace":"default","image":"busybox:1.28","cmdArgs":["echo","\"Hello World!! I am $(name)\""],"env":{"name":"Roger"}}'
 
 
-curl  http://localhost:8080/k8s/default/pods
-curl  http://localhost:8080/k8s/default/jobs
-curl  http://localhost:8080/k8s/default/job/hello
+curl -H "Authorization: BASIC YXBpdXNlcjprOHNwd2QK"  http://localhost:8080/k8s/default/pods
+curl -H "Authorization: BASIC YXBpdXNlcjprOHNwd2QK" http://localhost:8080/k8s/default/jobs
+curl -H "Authorization: BASIC YXBpdXNlcjprOHNwd2QK" http://localhost:8080/k8s/default/job/hello
 ```
 
 ## Reference

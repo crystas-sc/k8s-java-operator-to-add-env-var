@@ -11,6 +11,7 @@ rules:
   - deployments
   - services
   - jobs
+  - secrets
   verbs:
   - list
   - watch
